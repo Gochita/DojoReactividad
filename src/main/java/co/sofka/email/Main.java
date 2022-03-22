@@ -95,13 +95,34 @@ public class Main {
         Mono<Long> count = Flux.merge(gmail,hotmail,outlook)
                 .count();
 
-        System.out.println("El total de correos correctos: ");
-        count.subscribe(System.out::println);
+        //System.out.println("El total de correos correctos: ");
+      //  count.subscribe(System.out::println);
 
         Flux<Object> map = Flux.fromIterable(listaEmails)
-                .map(email -> email.getEmail().contains("@outlook.com") || email.getEmail().contains("@gmail.com") || email.getEmail().contains("@hotmail.com"));
-        map.subscribe(e -> );
+                .map(email -> {
+                    if (email.getEmail().contains("@outlook.com") || email.getEmail().contains("@gmail.com") || email.getEmail().contains("@hotmail.com")) {
+                        System.out.println("-----------");
+                        return email.getEmail();
+                    }
+                    System.out.println("-----------");
+                    System.out.println("El siguiente correo no cumple: ");
+                    return email.getEmail();
+
+
+                }
+        );
+        map.subscribe(System.out::println);
+
+
     }
+
+
+
+
+
+
+
+
 
 
 }
