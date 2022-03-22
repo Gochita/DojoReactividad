@@ -46,58 +46,63 @@ public class Main {
         Flux<Email> distinct = Flux.fromIterable(listaEmails)
                 .distinct();
 
-//        distinct.subscribe(System.out::println);
+       distinct.subscribe(System.out::println);
 
 //-----------------------------------------------------------------
         //Correos con gmail
         Flux<Email> gmail = Flux.fromIterable(listaEmails)
                 .filter(email -> email.getEmail().contains("@gmail.com"));
-         //   gmail.subscribe(System.out::println);
+            gmail.subscribe(System.out::println);
 
 
     //Cantidad de correos con dominio gmail
          Mono<Long> gmailCantidad = Flux.fromIterable(listaEmails)
                    .filter(email -> email.getEmail().contains("@gmail.com"))
                    .count();
-           //        gmailCantidad.subscribe(System.out::println);
+         gmailCantidad.subscribe(System.out::println);
 
 
         //Correos con hotmail
         Flux<Email> hotmail = Flux.fromIterable(listaEmails)
                 .filter(email -> email.getEmail().contains("@hotmail.com"));
-         //hotmail.subscribe(System.out::println);
+         hotmail.subscribe(System.out::println);
 
 
 //Cantidad de correos con dominio hotmail
          Mono<Long> hotmailCantidad = Flux.fromIterable(listaEmails)
                    .filter(email -> email.getEmail().contains("@hotmail.com"))
                    .count();
-          //         hotmailCantidad.subscribe(System.out::println);
+                  hotmailCantidad.subscribe(System.out::println);
 
 
         //Correos con outlook
         Flux<Email> outlook = Flux.fromIterable(listaEmails)
                 .filter(email -> email.getEmail().contains("@outlook.com"));
 
-        //outlook.subscribe(System.out::println);
+        outlook.subscribe(System.out::println);
 
 //Cantidad de correos con dominio outlook
          Mono<Long> outlookCantidad = Flux.fromIterable(listaEmails)
                    .filter(email -> email.getEmail().contains("@outlook.com"))
                    .count();
-            //       outlookCantidad.subscribe(System.out::println);
+                   outlookCantidad.subscribe(System.out::println);
 
 
 
 
 //------------------------------------------------------------------------
-
+//correos correctos
         Mono<Long> count = Flux.merge(gmail,hotmail,outlook)
                 .count();
 
-        //System.out.println("El total de correos correctos: ");
-      //  count.subscribe(System.out::println);
+        System.out.println("El total de correos correctos: ");
+        count.subscribe(System.out::println);
 
+
+
+//------------------------------------------------------------------------
+
+        //Los que cumplen y no cumplen
         Flux<Object> map = Flux.fromIterable(listaEmails)
                 .map(email -> {
                     if (email.getEmail().contains("@outlook.com") || email.getEmail().contains("@gmail.com") || email.getEmail().contains("@hotmail.com")) {
@@ -108,16 +113,35 @@ public class Main {
                     System.out.println("El siguiente correo no cumple: ");
                     return email.getEmail();
 
-
                 }
         );
         map.subscribe(System.out::println);
 
 
+
+        //----------------------------------------------------------
+
+
+        Flux<Object> cambiarEstado = Flux.fromIterable(listaEmails)
+                .map(email -> {
+                            if (email.getEmail().contains("@outlook.com") || email.getEmail().contains("@gmail.com") || email.getEmail().contains("@hotmail.com")) {
+                                if(email.getEstado().contains("No Enviado")){
+                                    email.setEstado("Enviado");
+
+
+                                }
+                                return email;
+                            }
+
+                            System.out.println("El siguiente correo no cumple por lo tanto el correo no puede ser enviado: ");
+                            return email;
+
+                        }
+                );
+        cambiarEstado.subscribe(System.out::println);
+
+
     }
-
-
-
 
 
 
