@@ -43,35 +43,64 @@ public class Main {
 
 
 //Flux para correos que no se repiten usando distinct
-        /*Flux<Email> distinct = Flux.fromIterable(listaEmails)
+        Flux<Email> distinct = Flux.fromIterable(listaEmails)
                 .distinct();
 
-        distinct.subscribe(System.out::println);*/
+//        distinct.subscribe(System.out::println);
 
 //-----------------------------------------------------------------
         //Correos con gmail
         Flux<Email> gmail = Flux.fromIterable(listaEmails)
                 .filter(email -> email.getEmail().contains("@gmail.com"));
+         //   gmail.subscribe(System.out::println);
 
-     //   gmail.subscribe(System.out::println);
+
+    //Cantidad de correos con dominio gmail
+         Mono<Long> gmailCantidad = Flux.fromIterable(listaEmails)
+                   .filter(email -> email.getEmail().contains("@gmail.com"))
+                   .count();
+           //        gmailCantidad.subscribe(System.out::println);
+
 
         //Correos con hotmail
         Flux<Email> hotmail = Flux.fromIterable(listaEmails)
                 .filter(email -> email.getEmail().contains("@hotmail.com"));
-//        hotmail.subscribe(System.out::println);
+         //hotmail.subscribe(System.out::println);
+
+
+//Cantidad de correos con dominio hotmail
+         Mono<Long> hotmailCantidad = Flux.fromIterable(listaEmails)
+                   .filter(email -> email.getEmail().contains("@hotmail.com"))
+                   .count();
+          //         hotmailCantidad.subscribe(System.out::println);
 
 
         //Correos con outlook
         Flux<Email> outlook = Flux.fromIterable(listaEmails)
                 .filter(email -> email.getEmail().contains("@outlook.com"));
 
-       // outlook.subscribe(System.out::println);
+        //outlook.subscribe(System.out::println);
+
+//Cantidad de correos con dominio outlook
+         Mono<Long> outlookCantidad = Flux.fromIterable(listaEmails)
+                   .filter(email -> email.getEmail().contains("@outlook.com"))
+                   .count();
+            //       outlookCantidad.subscribe(System.out::println);
+
+
+
+
+//------------------------------------------------------------------------
 
         Mono<Long> count = Flux.merge(gmail,hotmail,outlook)
                 .count();
 
         System.out.println("El total de correos correctos: ");
         count.subscribe(System.out::println);
+
+        Flux<Object> map = Flux.fromIterable(listaEmails)
+                .map(email -> email.getEmail().contains("@outlook.com") || email.getEmail().contains("@gmail.com") || email.getEmail().contains("@hotmail.com"));
+        map.subscribe(e -> );
     }
 
 
